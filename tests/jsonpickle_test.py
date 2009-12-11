@@ -29,8 +29,8 @@ class PicklingTestCase(unittest.TestCase):
         self.assertEqual('a string', self.unpickler.restore('a string'))
 
     def test_unicode(self):
-        self.assertEqual(u'a string', self.pickler.flatten(u'a string'))
-        self.assertEqual(u'a string', self.unpickler.restore(u'a string'))
+        self.assertEqual('a string', self.pickler.flatten('a string'))
+        self.assertEqual('a string', self.unpickler.restore('a string'))
 
     def test_int(self):
         self.assertEqual(3, self.pickler.flatten(3))
@@ -408,7 +408,7 @@ class PicklingTestCase(unittest.TestCase):
 
     def test_supports_getstate_setstate(self):
         obj = ThingWithProps('object-which-defines-getstate-setstate')
-        print dir(obj)
+        print(dir(obj))
         flattened = self.pickler.flatten(obj)
         self.assertTrue(flattened[tags.STATE].get('__identity__'))
         self.assertTrue(flattened[tags.STATE].get('nom'))
@@ -481,7 +481,7 @@ class JSONPickleTestCase(unittest.TestCase):
         pickled = jsonpickle.encode({Thing('random'): True})
         unpickled = jsonpickle.decode(pickled)
         self.assertEqual(unpickled,
-                         {u'samples.Thing("random")': True})
+                         {'samples.Thing("random")': True})
 
     def test_load_backend(self):
         """Test that we can call jsonpickle.load_backend()
@@ -546,7 +546,7 @@ class Mixin(object):
         return True
 
 
-class UnicodeMixin(unicode, Mixin):
+class UnicodeMixin(str, Mixin):
     def __add__(self, rhs):
         obj = super(UnicodeMixin, self).__add__(rhs)
         return UnicodeMixin(obj)
@@ -570,7 +570,7 @@ class ExternalHandlerTestCase(unittest.TestCase):
 
     def test_unicode_mixin(self):
         obj = UnicodeMixin('test')
-        self.assertEqual(unicode(obj), u'test')
+        self.assertEqual(str(obj), 'test')
 
         # Encode into JSON
         content = jsonpickle.encode(obj)
@@ -579,7 +579,7 @@ class ExternalHandlerTestCase(unittest.TestCase):
         new_obj = jsonpickle.decode(content)
         new_obj += ' passed'
 
-        self.assertEqual(unicode(new_obj), u'test passed')
+        self.assertEqual(str(new_obj), 'test passed')
         self.assertEqual(type(new_obj), UnicodeMixin)
         self.assertTrue(new_obj.ok())
 
